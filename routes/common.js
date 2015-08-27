@@ -112,8 +112,6 @@ router.post("/saveUser",function(req,resp,next){
 
 router.post("/editUser",function(req,resp,next){
 	console.log("Edit User :");
-	var query={_id:helper.toObjectID(req.body._id)};
-	console.log("=="+JSON.stringify(query));
 	db.collection("user").update({_id:helper.toObjectID(req.body._id)},
 						{'$set':{fullName:req.body.fullName,empId:req.body.empId,role:req.body.role,skillSet:req.body.skillSet}},
 							{upsert:true},function(err,result){
