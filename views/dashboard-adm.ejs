@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>AdminLTE 2 | Dashboard</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+      <% include commons/css %>
+  </head>
+  <!--
+  BODY TAG OPTIONS:
+  =================
+  Apply one or more of the following classes to get the
+  desired effect
+  |---------------------------------------------------------|
+  | SKINS         | skin-blue                               |
+  |               | skin-black                              |
+  |               | skin-purple                             |
+  |               | skin-yellow                             |
+  |               | skin-red                                |
+  |               | skin-green                              |
+  |---------------------------------------------------------|
+  |LAYOUT OPTIONS | fixed                                   |
+  |               | layout-boxed                            |
+  |               | layout-top-nav                          |
+  |               | sidebar-collapse                        |
+  |               | sidebar-mini                            |
+  |---------------------------------------------------------|
+  -->
+  <body class="skin-blue sidebar-mini"   ng-app="rootApp" ng-controller="listControlller">
+    <div class="wrapper" >
+
+      <!-- Main Header -->
+      <header class="main-header">
+
+        <!-- Logo -->
+        <a href="index2.html" class="logo">
+          <!-- mini logo for sidebar mini 50x50 pixels -->
+          <span class="logo-mini"><b>A</b>LT</span>
+          <!-- logo for regular state and mobile devices -->
+          <span class="logo-lg"><b>Admin</b>LTE</span>
+        </a>
+
+        <!-- Header Navbar -->
+        <% include commons/header %>
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar">
+
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+
+          <!-- Sidebar user panel (optional) -->
+          <div class="user-panel">
+            <div class="pull-left image">
+              <img src="/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image" />
+            </div>
+            <div class="pull-left info">
+
+              <p><%= user.email %></p>
+              <!-- Status -->
+              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+          </div>
+
+          <!-- search form (Optional)
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control" placeholder="Search..."/>
+              <span class="input-group-btn">
+                <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form> -->
+          <!-- /.search form -->
+
+          <!-- Sidebar Menu -->
+          <ul class="sidebar-menu" >
+           
+            <!-- Optionally, you can add icons to the links -->
+            <li  ><a href="#"><i class='fa fa-link'></i> <span>Reports</span></a></li>
+            
+            <li id="emp" ng-click="showEmployees()">
+              <a href="#"><i class='fa fa-link'></i> <span>Employee</span></a>
+             
+            </li>
+			 <li id="tech" ng-click="showTechnologies()"> <a href="#" ><i class='fa fa-link'></i> <span>Technolgies</span></a></li>
+          </ul><!-- /.sidebar-menu -->
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content" id="board">
+          <!-- Your Page Content Here -->
+		  <!-- Emp creation adding and editing froms -->
+		  <div class="row" id="empForm" style="display:none;">
+		  <div class="col-md-3">
+		  <div class="box">
+		  <div class="box-body">
+                <a class="btn btn-app" id="createEmp">
+                    <i class="fa fa-save"></i> Create
+                  </a>
+				  
+				 <a class="btn btn-app" id="editEmp">
+                    <i class="fa fa-edit"></i> Edit
+                  </a> 
+              </div>
+		  </div>	  
+			</div>
+			<div class="col-md-6" id="empCreateForm" style="display:none;">
+				<div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">New Employee Form</h3>
+                </div><!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal" ng-submit="registerUser.$valid && saveUser()" name="registerUser"  ng-controller="createEmpController" formSubmitted novalidate>
+                  <div class="box-body">
+				  <div class="form-group">
+                      <label class="col-sm-4 control-label" for="fullName">FullName</label>
+                      <div class="col-sm-6">
+                        <input type="text" placeholder="FullName"  class="form-control" name="fullName" ng-model="fullName" ng-minlength="5" ng-maxlength="20" required>
+                      <span>
+						<p ng-show="registerUser.fullName.$error.minlength" class="help-block" style="color:red">Full name is too short.</p>
+						<p ng-show="registerUser.fullName.$error.maxlength" class="help-block" style="color:red">Full name is too long.</p>
+					  </span>
+					  </div>
+                    </div>
+                    <div class="form-group has-feedback">
+                      <label class="col-sm-4 control-label" for="inputEmail3">Email</label>
+                      <div class="col-sm-6">
+                        <input type="email" placeholder="Email"  class="form-control" name="email" ng-model="email" ensure-unique="email" autocomplete="off" required>
+                      <span>
+						<p ng-show="registerUser.email.$pending.unique" class="help-block" style="color:red;">Checking please wait...</p>
+						<p ng-show="registerUser.email.$error.unique" class="help-block" style="color:red;">This email already exist</p>
+					</span>
+					  </div>
+					  
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-4 control-label" for="inputPassword3">Password(Temporary)</label>
+                      <div class="col-sm-6">
+                        <input type="text" placeholder="Password" id="inputPassword3" class="form-control" ng-model="password" required name="password" ng-minlength="5" ng-maxlength="20">
+                      <span>
+						<p ng-show="registerUser.password.$error.minlength" class="help-block" style="color:red">Password is too short.</p>
+						<p ng-show="registerUser.password.$error.maxlength" class="help-block" style="color:red">Password is too long.</p>
+					  </span>
+					  </div>
+                    </div>
+					<div class="form-group">
+                      <label class="col-sm-4 control-label" for="EmployeeId">EmployeeID</label>
+                      <div class="col-sm-6">
+                        <input type="text" placeholder="Employee ID" id="EmployeeId" class="form-control" ng-model="empId" name="empId" required ng-minlength="5" ng-maxlength="20">
+						 <span>
+						<p ng-show="registerUser.empId.$error.minlength" class="help-block" style="color:red">EmpId is too short.</p>
+						<p ng-show="registerUser.empId.$error.maxlength" class="help-block" style="color:red">EmpId is too long.</p>
+					  </span>
+					  </div>
+                    </div>
+					
+					<div class="form-group">
+                      <label class="col-sm-4 control-label" for="EmpRole">EmpRole</label>
+                      <div class="col-sm-6">
+                        <select class="form-control" ng-model="empRole" ng-options="values for values in empRolesList" required name="empRole">
+							<option value="">--select--</option>
+							<option value="DataEntry">DataEntry</option>
+							<option value="ExecutiveManager">ExecutiveManager</option>
+							<option value="Executive">Executive</option>
+						</select>
+						<p ng-show="registerUser.empRole.$dirty && registerUser.empRole.$error.required" class="help-block" style="color:red">EmpRole is required</p>
+                      </div>
+                    </div>
+                    <div class=" form-group">
+                      <label class="col-sm-4 control-label" >Skill set</label>
+                      <div class="checkbox col-sm-6">
+                        <label ng-repeat="technology in technologies" >
+								      <input type="checkbox" ng-model="skill"  ng-click="check($index,skill,technology)" ng-true-value="true" id="skill_{{$index}}"
+                  ng-false-value="false">{{technology}} &nbsp;&nbsp;  
+						</label>
+					 
+                      </div>
+                    </div>
+                  </div><!-- /.box-body -->
+                  <div class="box-footer">
+                    <button class="btn btn-default" type="button" id="resetSave" ng-click="reset()">Cancel</button>
+                    <button class="btn btn-info pull-right" type="submit" ng-disabled="registerUser.$invalid || skillSet.length==0" >Sign in</button>
+                  </div><!-- /.box-footer -->
+                </form>
+              </div>
+			  </div>
+			  
+			  <div class="col-md-6" id="editEmpForm" style="display:none;">
+				<div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Edit Employee Form</h3>
+                </div><!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal" ng-submit="editUser()" ng-controller="editEmpForm" name="editEmpForm" novalidate>
+                  <div class="box-body">
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label" for="inputEmail3">Email</label>
+                      <div class="col-sm-6">
+                        <input type="email" placeholder="Email" class="form-control" ng-model="_email" required name="_email">
+                      </div>
+                      <span >
+                        <input type="buttion" class="btn btn-primary" value="Get" ng-click="getUser()" style="width:10%;" ng-disabled="editEmpForm._email.$invalid"> 
+                      </span>
+                    </div>
+                    <div class="form-group" ng-show="isEmailValid">
+                      <label class="col-sm-3 control-label" for="fullName">FullName</label>
+                      <div class="col-sm-6">
+                        <input type="text" placeholder="FullName"  class="form-control" name="_fullName" ng-model="_fullName" ng-minlength="5" ng-maxlength="20" required>
+                      <span>
+            <p ng-show="editEmpForm._fullName.$error.minlength" class="help-block" style="color:red">Full name is too short.</p>
+            <p ng-show="editEmpForm._fullName.$error.maxlength" class="help-block" style="color:red">Full name is too long.</p>
+            </span>
+            </div>
+                    </div>
+                    <div class="form-group" ng-show="isEmailValid">
+                      <label class="col-sm-3 control-label" for="_employeeId">EmployeeID</label>
+                      <div class="col-sm-6">
+                        <input type="text" placeholder="Employee ID" name="_employeeId" class="form-control" ng-model="_empId" name="_empId" required ng-minlength="5" ng-maxlength="20">
+                       <span>
+                       <p ng-show="editEmpForm._employeeId.$error.minlength" class="help-block" style="color:red">EmpId is too short.</p>
+                      <p ng-show="editEmpForm._employeeId.$error.maxlength" class="help-block" style="color:red">EmpId is too long.</p>
+                     </span>
+                  </div>
+                    </div>
+                <div class="form-group" ng-show="isEmailValid">
+                      <label class="col-sm-3 control-label" for="_empRole">EmpRole</label>
+                      <div class="col-sm-6">
+                        <select class="form-control" ng-model="_empRole" ng-options="values for values in empRolesList" required name="_empRole">
+                      <option value="">--select--</option>
+                      <option value="DataEntry">DataEntry</option>
+                      <option value="ExecutiveManager">ExecutiveManager</option>
+                      <option value="Executive">Executive</option>
+                    </select>
+                  <p ng-show="editEmpForm._empRole.$dirty && editEmpForm._empRole.$error.required" class="help-block" style="color:red">EmpRole is required</p>
+                      </div>
+                    </div>
+                    <div class=" form-group" ng-show="isEmailValid">
+                      <label class="col-sm-3 control-label" >Skill set</label>
+                      <div class="checkbox col-sm-6">
+                        <label ng-repeat="technology in technologies" >
+                <input type="checkbox"   ng-model="_skill"  ng-click="check($index,_skill,technology)" ng-true-value="true" id="skillEdit_{{$index}}"
+                  ng-false-value="false">{{technology}} &nbsp;&nbsp;  
+                </label>
+          
+                      </div>
+                    </div>
+
+
+
+
+                  </div><!-- /.box-body -->
+                  <div class="box-footer">
+                    <button class="btn btn-default" type="reset" id="resetEdit" ng-click="reset()">Cancel</button>
+                    <button class="btn btn-info pull-right" type="submit" ng-disabled="editEmpForm.$invalid || _skillSet.length==0">Sign in</button>
+                  </div><!-- /.box-footer -->
+                </form>
+              </div>
+			  </div>
+		     </div>
+			  
+			  
+			  
+			  <!-- Technolgoy adding block -->
+		  <div class="row" id="techBlolck" style="display:none;">
+			<div class="col-md-6">
+				<div class="box">
+				
+                <div class="box-header with-border">
+				 <div class="row">
+					<div class="col-md-6"><h3 class="box-title">Bordered Table</h3></div>
+					<div class="col-md-6 text-right"><input type="button" class="btn btn-primary" value="New Technology" id="addTechnology"/></div>
+				</div>
+                 
+				 
+                </div><!-- /.box-header -->
+                <div class="box-body" >
+                  <table class="table table-bordered" id="dbTech">
+                    <thead>
+					<tr>
+                      <th style="width: 10px">#</th>
+                      <th>Technolgy</th>
+                      <th>Created on</th>
+					  <th>Action</th>
+                    </tr>
+                    </thead>
+					<tbody>
+					<tr ng-repeat="value in technologieslist">
+						<td>{{$index+1}}</td>
+						<td>{{value.Technology}}</td>
+						<td>{{formatDate(value.createdOn)}}</td>
+						<td><input type='button' class='btn btn-success' value='edit' ng-click="changeTechName(value.Technology)"></td>
+					</tr>
+					</tbody>
+                  </table>
+                </div><!-- /.box-body 
+                <div class="box-footer clearfix">
+                  <ul class="pagination pagination-sm no-margin pull-right">
+                    <li><a href="#">&laquo;</a></li>
+                    <li><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">&raquo;</a></li>
+                  </ul>
+                </div>-->
+              </div>
+			</div>
+		 </div>
+		     </div>
+			 
+			  
+
+        </section><!-- /.content -->
+		<div class="modal fade" id="myModel" ng-controller="saveTechnology">
+	<div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Add Technology to organization</h4>
+      </div>
+	  <form ng-submit="submitTech(technologyForm.$valid)" name="technologyForm">
+      <div class="modal-body">
+       <div class="form-group">
+            <label for="message-text" class="control-label">Technology Name :</label>
+			
+            <input typy="text" class="form-control" maxlength="15" ng-model="techName" name="techName" id="techName" required>
+			
+          </div> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+	  </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->  
+</div>
+<!-- -->
+  	<div class="modal fade" id="EditItem" ng-controller="editTechnology" >
+	<div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Edit : {{techName}}</h4>
+      </div>
+	  <form ng-submit="submitEditTech(technologyForm.$valid)" name="technologyForm">
+      <div class="modal-body">
+       <div class="form-group">
+            <label for="message-text" class="control-label">Technology Name :</label>
+			
+            <input typy="text" class="form-control" maxlength="15" ng-model="newName" name="ediTechName" id="ediTechName" required>
+			
+          </div> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" >Edit changes</button>
+      </div>
+	  </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+  </div>
+
+      </div><!-- /.content-wrapper -->
+
+      <!-- Main Footer -->
+      <% include commons/footer %>
+      
+      <!-- Control Sidebar -->      
+      <aside class="control-sidebar control-sidebar-dark">                
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+          <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+          <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <!-- Home tab content -->
+          <div class="tab-pane active" id="control-sidebar-home-tab">
+            <h3 class="control-sidebar-heading">Recent Activity</h3>
+            <ul class='control-sidebar-menu'>
+              <li>
+                <a href='javascript::;'>
+                  <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+                  <div class="menu-info">
+                    <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+                    <p>Will be 23 on April 24th</p>
+                  </div>
+                </a>
+              </li>              
+            </ul><!-- /.control-sidebar-menu -->
+
+            <h3 class="control-sidebar-heading">Tasks Progress</h3> 
+            <ul class='control-sidebar-menu'>
+              <li>
+                <a href='javascript::;'>               
+                  <h4 class="control-sidebar-subheading">
+                    Custom Template Design
+                    <span class="label label-danger pull-right">70%</span>
+                  </h4>
+                  <div class="progress progress-xxs">
+                    <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                  </div>                                    
+                </a>
+              </li>                         
+            </ul><!-- /.control-sidebar-menu -->         
+
+          </div><!-- /.tab-pane -->
+          <!-- Stats tab content -->
+          <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div><!-- /.tab-pane -->
+          <!-- Settings tab content -->
+          <div class="tab-pane" id="control-sidebar-settings-tab">            
+            <form method="post">
+              <h3 class="control-sidebar-heading">General Settings</h3>
+              <div class="form-group">
+                <label class="control-sidebar-subheading">
+                  Report panel usage
+                  <input type="checkbox" class="pull-right" checked />
+                </label>
+                <p>
+                  Some information about this general settings option
+                </p>
+              </div><!-- /.form-group -->
+            </form>
+          </div><!-- /.tab-pane -->
+        </div>
+      </aside><!-- /.control-sidebar -->
+      <!-- Add the sidebar's background. This div must be placed
+           immediately after the control sidebar -->
+      <div class='control-sidebar-bg'></div>
+    </div><!-- ./wrapper -->
+
+    <!-- REQUIRED JS SCRIPTS -->
+ 
+   <% include commons/scripts %>
+  <script src="/app-js/rootApp.js" type="text/javascript"></script>
+   <script src="/app-js/dashboard-angular-adm.js" type="text/javascript"></script> 
+	<script src="/app-js/dashboard-adm.js" type="text/javascript"></script>
+    <!-- Optionally, you can add Slimscroll and FastClick plugins.
+          Both of these plugins are recommended to enhance the
+          user experience. Slimscroll is required when using the
+          fixed layout. -->
+  </body>
+</html>

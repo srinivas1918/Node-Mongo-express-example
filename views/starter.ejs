@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Chat | Registration Page</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <!-- Bootstrap 3.3.4 -->
+     <% include commons/css %>
+
+   <style>
+   input.ng-pristine + ul#strength {
+    display:none;
+}
+ul#strength {
+    display:inline;
+    list-style:none;
+    margin:0;
+    margin-left:15px;
+    padding:0;
+    vertical-align:2px;
+}
+.point:last {
+    margin:0 !important;
+}
+.point {
+    background:#DDD;
+    border-radius:2px;
+    display:inline-block;
+    height:5px;
+    margin-right:1px;
+    width:20px;
+}
+   </style>
+   </head>
+  <body class="register-page">
+    <div class="register-box">
+      <div class="register-logo">
+      <b>Admin</b>LTE
+      </div>
+
+      <div class="register-box-body" ng-app="rootApp" >
+        <p class="login-box-msg">Register a new membership</p>
+        <form action="register" method="post" name="register" ng-controller="regController" novalidate>
+          <div class="form-group has-feedback">
+            <input type="text" class="form-control" placeholder="Full name" ng-model="username" ng-minlength="3" ng-maxlength="16" name="fullName" required/>
+		
+		
+            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+				<span>
+			<p ng-show="register.fullName.$error.minlength" class="help-block" style="color:red">Full name is too short.</p>
+			<p ng-show="register.fullName.$error.maxlength" class="help-block" style="color:red">Full name is too long.</p>
+			</span>
+          </div>
+		 
+          <div class="form-group has-feedback">
+            <input type="email" class="form-control" placeholder="Email" ng-model="email" name="email" ensure-unique="email" required/>
+            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+			<span>
+			<p ng-show="register.email.$pending.unique" class="help-block" style="color:red;">Checking please wait...</p>
+			<p ng-show="register.email.$error.unique" class="help-block" style="color:red;">This email already exist</p>
+			</span>
+          </div>
+          <div class="form-group has-feedback">
+            <input type="password" class="form-control" placeholder="Password" ng-model="password" name="password" id="password"  required/>
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+			<span>
+			<ul id="strength" check-strength="password"></ul>
+			</span>
+          </div>
+          <div class="form-group has-feedback">
+            <input type="password" class="form-control" placeholder="Retype password" ng-model="confirmPwd" name="confirmPwd" check-password="confirmPwd" required/>
+            <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+			<span>
+			<p ng-show="register.confirmPwd.$error.checkPassword" class="help-block" style="color:red;">Password doesn`t match</p>
+			</span>
+          </div>
+          <div class="row">
+            <div class="col-xs-8">    
+              <div class="form-group has-feedback">
+                <label>
+                  <input type="checkbox" ng-model="agree" required > I agree to the <a href="#">terms</a>
+				  
+                </label>
+              </div>                        
+            </div><!-- /.col -->
+            <div class="col-xs-4">
+			
+			
+			<button type="submit" class="btn btn-primary btn-block btn-flat" ng-disabled="register.$invalid">Register</button>
+            </div><!-- /.col -->
+          </div>
+        </form>        
+
+        <div class="social-auth-links text-center">
+          <p>- OR -</p>
+          <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign up using Facebook</a>
+          <a href="#" class="btn btn-block btn-social btn-google-plus btn-flat"><i class="fa fa-google-plus"></i> Sign up using Google+</a>
+        </div>
+
+        <a href="login" class="text-center">I already have a membership</a>
+      </div><!-- /.form-box -->
+    </div><!-- /.register-box -->
+
+	<!-- Scripts required for application -->
+    <% include commons/scripts %>
+	<script src="app-js/rootApp.js"></script>
+	<script src="app-js/regController.js"></script>
+    
+  </body>
+</html>
